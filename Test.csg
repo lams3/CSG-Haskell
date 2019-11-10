@@ -1,0 +1,6 @@
+Difference (
+    Union(
+        Cube (1 2 3) (1 2 3) (1 2 3) 
+        Sphere (1 2 3) (1 2 3) (1 2 3)
+    ) Cylinder (1 2 3) (1 2 3) (1 2 3)
+)
