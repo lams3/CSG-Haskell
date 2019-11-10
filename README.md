@@ -8,13 +8,13 @@ Here's one example for using CSG-Haskell
 
     Difference (
         Intersection (
-            Cube (x y z) (a b g) (sx sy sz),
+            Cube (x y z) (a b g) (sx sy sz)
             Sphere (x y z) (a b g) (sx sy sz)
-        ),
+        )
         Union (
-            Cylinder (x y z) (a b g) (sx sy sz),
+            Cylinder (x y z) (a b g) (sx sy sz)
             Union (
-                Cylinder (x y z) (a b g) (sx sy sz),
+                Cylinder (x y z) (a b g) (sx sy sz)
                 Cylinder (x y z) (a b g) (sx sy sz)
             )
         )
