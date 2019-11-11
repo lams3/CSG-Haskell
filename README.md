@@ -4,18 +4,18 @@ In CSG-Haskell we can construct primitives and apply CSG operations on them (Uni
 
 Primitives aways receive translation, rotation and scale vectors respectively.
 
-Here's one example for using CSG-Haskell
+Here's one example of using CSG-Haskell
 
     Difference (
         Intersection (
-            Cube (x y z) (a b g) (sx sy sz)
-            Sphere (x y z) (a b g) (sx sy sz)
+            Cube (0 0 0) (0 0 0) (1 1 1)
+            Sphere (0 0 0) (0 0 0) (1 1 1)
         )
         Union (
-            Cylinder (x y z) (a b g) (sx sy sz)
+            Cylinder (0 0 0) (0 0 0) (1 1 1)
             Union (
-                Cylinder (x y z) (a b g) (sx sy sz)
-                Cylinder (x y z) (a b g) (sx sy sz)
+                Cylinder (0 0 0) (0 0 0) (1 1 1)
+                Cylinder (0 0 0) (0 0 0) (1 1 1)
             )
         )
     )

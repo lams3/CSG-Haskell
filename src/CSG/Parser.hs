@@ -4,13 +4,14 @@ module CSG.Parser (
 
 import CSG
 import Text.ParserCombinators.ReadP
+import Data.Char
 import Control.Applicative hiding (many)
 
 readF :: String -> Float
 readF = read
 
 isWhiteSpace :: Char -> Bool
-isWhiteSpace char = any (char ==) "     \n"
+isWhiteSpace char = elem char "     \n"
 
 whiteSpace :: ReadP ()
 whiteSpace = do
@@ -23,7 +24,7 @@ whiteSpace1 = do
     return ()
 
 digit :: ReadP Char
-digit = satisfy (\c -> c >= '0' && c <= '9')
+digit = satisfy isDigit
 
 integer :: ReadP Float
 integer = fmap readF (many1 digit)
@@ -124,9 +125,7 @@ operation = do
     return (oType s1 s2)
 
 solid :: ReadP Solid
-solid = do
-    s <- (fmap Base primitive) <|> operation
-    return s
+solid = ((fmap Base primitive) <|> operation)
 
 parse :: String -> Maybe Solid
 parse str =
