@@ -8,14 +8,14 @@ Here's one example of using CSG-Haskell
 
     Difference (
         Intersection (
-            Cube (0 0 0) (0 0 0) (1 1 1)
-            Sphere (0 0 0) (0 0 0) (1 1 1)
+            Box (1 1 1) T( (0 0 0) (0 0 0) )
+            Sphere 1 T( (0 0 0) (0 0 0) )
         )
         Union (
-            Cylinder (0 0 0) (0 0 0) (1 1 1)
+            Cylinder 1 0.5 T( (0 0 0) (0 0 0) )
             Union (
-                Cylinder (0 0 0) (0 0 0) (1 1 1)
-                Cylinder (0 0 0) (0 0 0) (1 1 1)
+                Cylinder 1 0.5 T( (0 0 0) (90 0 0) )
+                Cylinder 1 0.5 T( (0 0 0) (0 0 90) )
             )
         )
     )

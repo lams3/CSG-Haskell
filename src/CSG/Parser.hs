@@ -6,6 +6,7 @@ import CSG
 import Text.ParserCombinators.ReadP
 import Data.Char
 import Control.Applicative hiding (many)
+import Control.Monad
 
 readF :: String -> Float
 readF = read
@@ -37,7 +38,13 @@ float = do
     return (i + (readF ("0." ++ (show $ round d))))
 
 number :: ReadP Float
-number = float <|> integer
+number = do
+    s <- string "+" <|> string "-" <|> string ""
+    n <- float <|> integer
+    case s of
+        "+" -> return n
+        "" -> return n
+        "-" -> return (-n)
 
 vector :: ReadP Vector
 vector = do
@@ -52,40 +59,57 @@ vector = do
     _ <- string ")"
     return (x, y, z)
 
-cube :: ReadP (Prop -> Primitive)
-cube = do 
-    x <- string "Cube" <|> string "cube"
-    case x of
-        [] -> pfail
-        _ -> return Cube
-
-cylinder :: ReadP (Prop -> Primitive)
-cylinder = do 
-    x <- string "Cylinder" <|> string "cylinder"
-    case x of
-        [] -> pfail
-        _ -> return Cylinder
-
-sphere :: ReadP (Prop -> Primitive)
-sphere = do 
-    x <- string "Sphere" <|> string "sphere"
-    case x of
-        [] -> pfail
-        _ -> return Sphere
-
-primitiveType :: ReadP (Prop -> Primitive)
-primitiveType = cube <|> cylinder <|> sphere 
-
-primitive :: ReadP Primitive
-primitive = do
-    pType <- primitiveType
+transform :: ReadP Transform
+transform = do
+    _ <- string "T"
     _ <- whiteSpace
-    p <- vector
+    _ <- string "("
     _ <- whiteSpace
+    t <- vector
+    _ <- whiteSpace1
     r <- vector
     _ <- whiteSpace
-    s <- vector
-    return (pType (p, r, s))
+    _ <- string ")"
+    return (t, r)
+
+box :: ReadP Primitive
+box = do 
+    x <- string "Box" <|> string "box"
+    _ <- whiteSpace1
+    side <- vector
+    case x of
+        [] -> pfail
+        _ -> return Box { side = side }
+
+cylinder :: ReadP Primitive
+cylinder = do 
+    x <- string "Cylinder" <|> string "cylinder"
+    _ <- whiteSpace1
+    height <- number
+    _ <- whiteSpace1
+    radius <- number
+    case x of
+        [] -> pfail
+        _ -> return Cylinder { height = height, radius = radius}
+
+sphere :: ReadP Primitive
+sphere = do 
+    x <- string "Sphere" <|> string "sphere"
+    _ <- whiteSpace1
+    radius <- number
+    case x of
+        [] -> pfail
+        _ -> return Sphere { radius = radius }
+
+primitive :: ReadP Primitive
+primitive = box <|> cylinder <|> sphere 
+
+base :: ReadP Solid
+base = do
+    primitive <- primitive
+    _ <- whiteSpace1
+    transform <- transform
+    return (Base primitive transform)
 
 union :: ReadP (Solid -> Solid -> Solid)
 union = do 
@@ -125,7 +149,7 @@ operation = do
     return (oType s1 s2)
 
 solid :: ReadP Solid
-solid = ((fmap Base primitive) <|> operation)
+solid = base <|> operation
 
 parse :: String -> Maybe Solid
 parse str =
